@@ -21,19 +21,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        ///////////////////REQUEST_ALL_PERMISSIONS_IN_A_SINGLE_ALERT///////////////////////////////
         int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION};
 
+            //hasPermission is a function defined at the end of this class
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        ////////////////////SHOW_MAP_FRAGMENT_IN_MAINACTIVITY'S_LAYOUT//////////////////
         MapFragment mapFragment=new MapFragment();
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_holder,mapFragment);
         ft.commit();
+        ///////////////////////////////////////////////////////////////////////////////
+
+
+
+        //////////////////////START_BACKGROUND_SERVICE_TO_GET_GPS_LOCATION//////////////////////
         Intent intent=new Intent(this,LocService.class);
         startService(intent);
+        ////////////////////////////////////////////////////////////////////////////////////////
+
     }
 
     @Override
@@ -41,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         Log.d(TAG, "onPause: called");
         try {
-            //DO THIS ONLY IF YOU DONT WANT SERVICE TO RU IN BACKGROUND
+            //DO THIS ONLY IF YOU DONT WANT SERVICE TO RUN IN BACKGROUND
             stopService(new Intent(getBaseContext(),LocService.class));
         }catch (Exception e){
             e.printStackTrace();
@@ -52,10 +66,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //DO THIS ONLY IF YOU DONT WANT SERVICE TO RUN IN BACKGROUND
         stopService(new Intent(getBaseContext(),LocService.class));
         Log.d("MAIN ####", "onDestroy: Stoppoing service");
     }
 
+
+
+    ///////////////////////PERMISSION_CHECKING_FUNCTION////////////////////////////////////////////
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -66,4 +84,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+
 }

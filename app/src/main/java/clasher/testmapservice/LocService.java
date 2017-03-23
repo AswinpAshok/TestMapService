@@ -26,10 +26,11 @@ public class LocService extends Service implements
         LocationListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
     public LocService() {
     }
-    public static final String TAG="SERVICE ####";
 
+    public static final String TAG="SERVICE ####";
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     public static Location mCurrentLocation;
@@ -38,19 +39,33 @@ public class LocService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
+        /////////////////////CHECK_PLAY_SERVICES///////////////////////////////////////////////
+                //play services is nescessary for google FusedLocationProvider to work
         if (isGooglePlayServicesAvailable()) {
+
+            //Create new LocationRequest, LocationRequest Will execute in specified interval
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(BACKGROUND_INTERVAL);
             mLocationRequest.setFastestInterval(BACKGROUND_INTERVAL);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); //PRIORITY_HIGH_ACCURACY uses gps
             //mLocationRequest.setSmallestDisplacement(10.0f);  /* min dist for location change, here it is 10 meter */
+
+            //Create googleApiClient to connect to google location services
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
 
+            //connect
             mGoogleApiClient.connect();
+
+            /*
+            * GoogleApiClient have connection Callbacks.
+            * When connected it will call onConnected()
+            * and similar calls are made to onConnectionSuspended() and onConnectionFailed(),
+            * based on connection results
+            */
         }
         Log.d(TAG, "onCreate: Service created");
     }
@@ -74,19 +89,29 @@ public class LocService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
 
+        //FusedLocationProvider has returned Location object
         Toast.makeText(getBaseContext(),"Loc changed from service",Toast.LENGTH_LONG).show();
         Log.d(TAG, "onLocationChanged: Location changed");
-        Intent intent=new Intent("LocServiceLocation");
+
+        ///////SENDING_LOCATION_DETAILS (BROADCASTING WITH UNIQUE TAG "LOC_SERVICE_LOCATION")//////////
+        Intent intent=new Intent("LOC_SERVICE_LOCATION");
         intent.putExtra("latitude",location.getLatitude());
         intent.putExtra("longitude",location.getLongitude());
-
         sendBroadcast(intent);
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
+        /*
+        * A broadcast reciever must be registered in activity or fragment, (in this case in the onResume() of fragment MapFragment)
+        * to recive location broadcasts, with intent filter "LOC_SERVICE_LOCATION"
+        * If the activity/fragment is active, it willrecive location broadcasts with location data
+        */
+
 
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        //Call startLocationUpdates()
         startLocationUpdates();
 
     }
@@ -94,19 +119,18 @@ public class LocService extends Service implements
     protected void startLocationUpdates() {
         try {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+                // TODO: Consider calling Permission requests
                 return;
             }
             Log.d(TAG, "startLocationUpdates: Starting Location Updates");
+
+           //Request Location with callback onLocationChanged()
             PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
-        } catch (IllegalStateException e) {}
+
+        } catch (IllegalStateException e) {
+
+        }
     }
 
 

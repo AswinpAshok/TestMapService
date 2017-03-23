@@ -39,6 +39,8 @@ public class MapFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+    /////This broadcast receiver will get location broadcasts from service
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
@@ -52,19 +54,6 @@ public class MapFragment extends Fragment {
                 googlemap.addMarker(new MarkerOptions().position(myLoc).title("myLoc"));
 //                if (flag==0) {
                     cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).build();
-//                    googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//                    flag=1;
-//                }else {
-//                    if (location.hasBearing()) {
-//                        CameraPosition cameraPos = new CameraPosition.Builder()
-//                                .target(myLoc)             // Sets the center of the map to current location
-//                                .zoom(15)                   // Sets the zoom
-//                                .bearing(location.getBearing()) // Sets the orientation of the camera to east
-//                                .tilt(0)                   // Sets the tilt of the camera to 0 degrees
-//                                .build();                   // Creates a CameraPosition from the builder
-//                        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
-//                    } else {
-//                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googleMap.getCameraPosition().zoom).build();
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //                    }
 
@@ -72,9 +61,6 @@ public class MapFragment extends Fragment {
                 e.printStackTrace();
             }
 
-
-            //or
-            //exercises = ParseJSON.ChallengeParseJSON(intent.getStringExtra(MY_KEY));
 
         }
     };
@@ -85,6 +71,7 @@ public class MapFragment extends Fragment {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_map, container, false);
 
+        //////////////////////TO_VIEW_MAP_INSIDE//////////////////////////////////////
         mapView=(MapView) view.findViewById(R.id.mapFragment);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
@@ -98,6 +85,7 @@ public class MapFragment extends Fragment {
 
             }
         });
+        ///////////////////////////////////////////////////////////////////////////////
 
         return view;
     }
@@ -105,7 +93,9 @@ public class MapFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: called");
-        getActivity().registerReceiver(receiver, new IntentFilter("LocServiceLocation"));
+
+        //////Register broadcast reciever, to recieve location updates
+        getActivity().registerReceiver(receiver, new IntentFilter("LOC_SERVICE_LOCATION"));
     }
 
     @Override
