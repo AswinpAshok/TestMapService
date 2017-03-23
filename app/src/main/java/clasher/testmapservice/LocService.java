@@ -95,8 +95,7 @@ public class LocService extends Service implements
 
         ///////SENDING_LOCATION_DETAILS (BROADCASTING WITH UNIQUE TAG "LOC_SERVICE_LOCATION")//////////
         Intent intent=new Intent("LOC_SERVICE_LOCATION");
-        intent.putExtra("latitude",location.getLatitude());
-        intent.putExtra("longitude",location.getLongitude());
+        intent.putExtra("location",location);
         sendBroadcast(intent);
         /////////////////////////////////////////////////////////////////////////////////////////////
 

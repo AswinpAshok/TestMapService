@@ -45,21 +45,34 @@ public class MapFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            latitude=intent.getDoubleExtra("latitude",0);
-            longitude=intent.getDoubleExtra("longitude",0);
+           Location location=intent.getParcelableExtra("location");
             Log.d("MAP####", "onReceive: Recieving loaction");
 
-            LatLng myLoc=new LatLng(latitude,longitude);
+            LatLng myLoc=new LatLng(location.getLatitude(),location.getLongitude());
             try {
                 googlemap.addMarker(new MarkerOptions().position(myLoc).title("myLoc"));
-//                if (flag==0) {
+                if (flag == 0) {
                     cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).build();
+                    googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    flag = 1;
+                } else {
+                    if (location.hasBearing()) {
+                        CameraPosition cameraPos = new CameraPosition.Builder()
+                                .target(myLoc)             // Sets the center of the map to current location
+                                .zoom(15)                   // Sets the zoom
+                                .bearing(location.getBearing()) // Sets the orientation of the camera to east
+                                .tilt(0)                   // Sets the tilt of the camera to 0 degrees
+                                .build();                   // Creates a CameraPosition from the builder
+                        googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
+                    } else {
+                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).build();
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//                    }
+                    }
+                }
 
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
 
         }

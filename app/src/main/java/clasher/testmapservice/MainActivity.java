@@ -41,13 +41,15 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
         ///////////////////////////////////////////////////////////////////////////////
 
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
         //////////////////////START_BACKGROUND_SERVICE_TO_GET_GPS_LOCATION//////////////////////
         Intent intent=new Intent(this,LocService.class);
         startService(intent);
         ////////////////////////////////////////////////////////////////////////////////////////
-
     }
 
     @Override
