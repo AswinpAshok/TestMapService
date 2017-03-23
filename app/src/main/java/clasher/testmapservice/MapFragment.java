@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,7 +51,8 @@ public class MapFragment extends Fragment {
 
             LatLng myLoc=new LatLng(location.getLatitude(),location.getLongitude());
             try {
-                googlemap.addMarker(new MarkerOptions().position(myLoc).title("myLoc"));
+                googlemap.clear();
+                googlemap.addMarker(new MarkerOptions().position(myLoc).title("You").snippet("This is your current position").icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_marker)));
                 if (flag == 0) {
                     cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).build();
                     googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -59,13 +61,13 @@ public class MapFragment extends Fragment {
                     if (location.hasBearing()) {
                         CameraPosition cameraPos = new CameraPosition.Builder()
                                 .target(myLoc)             // Sets the center of the map to current location
-                                .zoom(15)                   // Sets the zoom
+                                .zoom(googlemap.getCameraPosition().zoom)                   // Sets the zoom
                                 .bearing(location.getBearing()) // Sets the orientation of the camera to east
-                                .tilt(0)                   // Sets the tilt of the camera to 0 degrees
+                                .tilt(1)                   // Sets the tilt of the camera to 0 degrees
                                 .build();                   // Creates a CameraPosition from the builder
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
                     } else {
-                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).build();
+                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).tilt(1).build();
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     }
                 }
@@ -95,6 +97,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 googlemap=googleMap;
+                googleMap.setBuildingsEnabled(true);
 
             }
         });

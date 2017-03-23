@@ -15,6 +15,11 @@ import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity {
 
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,10 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///////////////////REQUEST_ALL_PERMISSIONS_IN_A_SINGLE_ALERT///////////////////////////////
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION};
 
             //hasPermission is a function defined at the end of this class
         if(!hasPermissions(this, PERMISSIONS)){
@@ -47,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //////////////////////START_BACKGROUND_SERVICE_TO_GET_GPS_LOCATION//////////////////////
-        Intent intent=new Intent(this,LocService.class);
-        startService(intent);
+        if(hasPermissions(this, PERMISSIONS)){
+            Intent intent=new Intent(this,LocService.class);
+            startService(intent);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////
     }
 
