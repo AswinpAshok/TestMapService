@@ -105,6 +105,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        flag=0;
         Log.d(TAG, "onResume: called");
 
         //////Register broadcast reciever, to recieve location updates
