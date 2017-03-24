@@ -34,7 +34,8 @@ public class LocService extends Service implements
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     public static Location mCurrentLocation;
-    public static final long BACKGROUND_INTERVAL = 1000 * 5;
+    public static final long SHORT_INTERVAL = 1000 * 10;
+    public static final long LONG_INTERVAL = 1000 * 5;
 
     @Override
     public void onCreate() {
@@ -45,8 +46,8 @@ public class LocService extends Service implements
 
             //Create new LocationRequest, LocationRequest Will execute in specified interval
             mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(BACKGROUND_INTERVAL);
-            mLocationRequest.setFastestInterval(BACKGROUND_INTERVAL);
+            mLocationRequest.setInterval(LONG_INTERVAL);
+            mLocationRequest.setFastestInterval(SHORT_INTERVAL);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); //PRIORITY_HIGH_ACCURACY uses gps
             //mLocationRequest.setSmallestDisplacement(10.0f);  /* min dist for location change, here it is 10 meter */
 
@@ -143,9 +144,13 @@ public class LocService extends Service implements
 
     }
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        Log.d(TAG, "Location update stopped .......................");
+        try {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+            Log.d(TAG, "Location update stopped .......................");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

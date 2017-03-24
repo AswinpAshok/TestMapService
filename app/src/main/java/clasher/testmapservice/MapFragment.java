@@ -54,7 +54,7 @@ public class MapFragment extends Fragment {
                 googlemap.clear();
                 googlemap.addMarker(new MarkerOptions().position(myLoc).title("You").snippet("This is your current position").icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_marker)));
                 if (flag == 0) {
-                    cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).build();
+                    cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).tilt(67).build();
                     googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     flag = 1;
                 } else {
@@ -62,12 +62,12 @@ public class MapFragment extends Fragment {
                         CameraPosition cameraPos = new CameraPosition.Builder()
                                 .target(myLoc)             // Sets the center of the map to current location
                                 .zoom(googlemap.getCameraPosition().zoom)                   // Sets the zoom
-                                .bearing(location.getBearing()) // Sets the orientation of the camera to east
-                                .tilt(1)                   // Sets the tilt of the camera to 0 degrees
+                                .bearing(location.getBearing())
+                                .tilt(67)                   // Sets the tilt of the camera to 0 degrees
                                 .build();                   // Creates a CameraPosition from the builder
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
                     } else {
-                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).tilt(1).build();
+                        cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).tilt(67).bearing(location.getBearing()).build();
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     }
                 }
@@ -115,32 +115,12 @@ public class MapFragment extends Fragment {
         getActivity().registerReceiver(receiver, new IntentFilter("LOC_SERVICE_LOCATION"));
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        try {
-            getActivity().unregisterReceiver(receiver);
-            Log.d(TAG, "onStop: called");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+
 public static final String TAG="####_MAP_FRAG";
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: called");
-        try {
-            getActivity().unregisterReceiver(receiver);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: called");
         try {
             getActivity().unregisterReceiver(receiver);
         }catch (Exception e){
