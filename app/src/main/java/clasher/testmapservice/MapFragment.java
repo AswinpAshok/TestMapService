@@ -32,8 +32,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import clasher.testmapservice.Direction.DirectionFinder;
@@ -66,6 +68,7 @@ public class MapFragment extends Fragment implements DirectionFinderListener {
     }
 
 
+    Marker marker=null;
     /////This broadcast receiver will get location broadcasts from service
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -75,10 +78,18 @@ public class MapFragment extends Fragment implements DirectionFinderListener {
             origin=location;
             Log.d("MAP####", "onReceive: Recieving loaction");
 
+
+
+
+
             LatLng myLoc=new LatLng(location.getLatitude(),location.getLongitude());
             try {
-                googlemap.clear();
-                googlemap.addMarker(new MarkerOptions().position(myLoc).title("You").snippet("This is your current position").icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_marker)));
+                try{
+                    marker.remove();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                marker=googlemap.addMarker(new MarkerOptions().position(myLoc).title("You").snippet("This is your current position").icon(BitmapDescriptorFactory.fromResource(R.drawable.truck_marker)));
                 if (flag == 0) {
                     cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(18).tilt(67).build();
                     googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -96,6 +107,9 @@ public class MapFragment extends Fragment implements DirectionFinderListener {
                         cameraPosition = new CameraPosition.Builder().target(myLoc).zoom(googlemap.getCameraPosition().zoom).tilt(67).bearing(location.getBearing()).build();
                         googlemap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     }
+
+
+
                 }
 
                 }catch(Exception e){
@@ -220,9 +234,10 @@ public static final String TAG="####_MAP_FRAG";
 //            ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
 //            ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
 
-            originMarkers.add(googlemap.addMarker(new MarkerOptions()
-                    .title(route.startAddress)
-                    .position(route.startLocation)));
+//            originMarkers.add(googlemap.addMarker(new MarkerOptions()
+//                    .title(route.startAddress)
+//                    .position(route.startLocation)));
+
             destinationMarkers.add(googlemap.addMarker(new MarkerOptions()
                     .title(route.endAddress)
                     .position(route.endLocation)));
