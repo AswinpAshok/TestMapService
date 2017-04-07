@@ -1,7 +1,7 @@
 # TestMapService
 SAMPLE PROJECT TO UPDATE GOOGLE MAP LOCATION FROM A BACKGROUND SERVICE USING GPS
 
-Based on Hiep Mai Thanh's youtube tutorial (https://www.youtube.com/watch?v=CCZPUeY94MU&lc=z134cdda2xf5t1nut23ujflqrwubztv05.1491494362533200), 
+Based on Hiep Mai Thanh's youtube tutorial (https://www.youtube.com/watch?v=CCZPUeY94MU), 
 
 and javapapers.com's fused location provider API tutorial (http://javapapers.com/android/android-location-fused-provider/).
 
